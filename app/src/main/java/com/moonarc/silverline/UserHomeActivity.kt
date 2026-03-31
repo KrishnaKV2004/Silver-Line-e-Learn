@@ -38,7 +38,10 @@ class UserHomeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SilverLineTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = MaterialTheme.colorScheme.background
+                ) { innerPadding ->
                     SubjectScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -72,10 +75,20 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
         Text(
             text = "Silverline e-Learn",
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(70.dp))
+        Spacer(modifier = Modifier.height(50.dp))
+
+        Text(
+            text = "What would you like to learn today ?",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(40.dp))
 
         Button(
             onClick = { },
