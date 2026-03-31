@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +45,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.ui.platform.LocalConfiguration
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
 
 class UserHomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,8 +127,14 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
     Column(
-        modifier = modifier.clickable { }
+        modifier = modifier.clickable {
+            val intent = Intent(context, ClassListActivity::class.java)
+            intent.putExtra("subject", title)
+            context.startActivity(intent)
+        }
     ) {
         Card(
             shape = RoundedCornerShape(16.dp),
