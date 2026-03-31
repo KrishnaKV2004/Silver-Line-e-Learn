@@ -1,4 +1,6 @@
 package com.moonarc.silverline
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 
@@ -31,6 +32,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.Box
 
 class UserHomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +67,7 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -90,29 +101,49 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Button(
-            onClick = { },
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Hindi")
+            SubjectBox("Hindi", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
+            SubjectBox("English", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
-        Button(
-            onClick = { },
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("English")
+            SubjectBox("Maths", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
+            SubjectBox("Science", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(
-            onClick = { },
-            modifier = Modifier.fillMaxWidth()
+@Composable
+fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.clickable { }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(6.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.75f)
         ) {
-            Text("Maths")
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
     }
 }
