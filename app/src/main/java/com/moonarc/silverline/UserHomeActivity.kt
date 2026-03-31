@@ -41,6 +41,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.ui.platform.LocalConfiguration
 
 class UserHomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +66,12 @@ class UserHomeActivity : ComponentActivity() {
 @Composable
 fun SubjectScreen(modifier: Modifier = Modifier) {
 
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val columns = if (screenWidth < 600) 2 else 4
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -99,24 +103,20 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(columns),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         ) {
-            SubjectBox("Hindi", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
-            SubjectBox("English", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
-        }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            SubjectBox("Maths", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
-            SubjectBox("Science", android.R.drawable.ic_menu_gallery, Modifier.weight(1f))
+            item { SubjectBox("Hindi", android.R.drawable.ic_menu_gallery) }
+            item { SubjectBox("English", android.R.drawable.ic_menu_gallery) }
+            item { SubjectBox("Maths", android.R.drawable.ic_menu_gallery) }
+            item { SubjectBox("Science", android.R.drawable.ic_menu_gallery) }
         }
     }
 }
