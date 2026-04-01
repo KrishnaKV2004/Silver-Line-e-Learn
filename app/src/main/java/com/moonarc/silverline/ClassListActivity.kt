@@ -3,9 +3,11 @@ package com.moonarc.silverline
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -14,9 +16,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.moonarc.silverline.ui.theme.SilverLineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,15 +68,58 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                        .height(110.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(6.dp)
                 ) {
-                    Text(
-                        text = item,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 18.sp
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+
+                        // 📘 Left Image Placeholder (for PDF cover)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(90.dp)
+                                .padding(8.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+
+                        // 📄 Content Section
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 12.dp, horizontal = 8.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            Text(
+                                text = item,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Text(
+                                text = "Tap to open",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        // ▶️ Play / Open Icon
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(end = 16.dp),
+                            contentAlignment = androidx.compose.ui.Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Open",
+                                modifier = Modifier.rotate(180f)
+                            )
+                        }
+                    }
                 }
             }
         }
