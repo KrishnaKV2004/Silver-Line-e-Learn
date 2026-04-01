@@ -13,9 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.material3.Text
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +41,7 @@ class ClassListActivity : ComponentActivity() {
 @Composable
 fun ClassListScreen(subject: String, onBack: () -> Unit) {
 
-    val classList = (1..8).map { "Class $it" }
+    val classList = (1..10).map { "Class $it" }
 
     Scaffold(
         topBar = {
@@ -64,11 +61,12 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            contentPadding = PaddingValues(top = 10.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(classList) { item ->
+
                 val context = LocalContext.current
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -82,11 +80,8 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                     shape = RoundedCornerShape(20.dp),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
+                    Row(modifier = Modifier.fillMaxSize()) {
 
-                        // 📘 Left Image Placeholder (for PDF cover)
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -96,14 +91,12 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
                         )
 
-                        // 📄 Content Section
                         Column(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(vertical = 12.dp, horizontal = 8.dp),
+                                .padding(12.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-
                             Text(
                                 text = item,
                                 style = MaterialTheme.typography.titleMedium
@@ -111,12 +104,11 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
 
                             Text(
                                 text = "Tap to open",
-                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
-                        // ▶️ Play / Open Icon
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
