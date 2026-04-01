@@ -1,8 +1,12 @@
 package com.moonarc.silverline
 
+import android.graphics.Bitmap
+import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
@@ -14,18 +18,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.moonarc.silverline.ui.theme.SilverLineTheme
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 class PdfViewerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val pdfName = intent.getStringExtra("pdf") ?: ""
+
         setContent {
             SilverLineTheme {
-                PdfViewerScreen(onBack = { finish() })
+                PdfViewerScreen(pdfName = pdfName, onBack = { finish() })
             }
         }
     }
@@ -33,11 +41,39 @@ class PdfViewerActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PdfViewerScreen(onBack: () -> Unit) {
+fun PdfViewerScreen(pdfName: String, onBack: () -> Unit) {
 
-    var currentPage by remember { mutableStateOf(1) }
+    var currentPage by remember { mutableStateOf(0) }
     var dragOffset by remember { mutableStateOf(0f) }
-    val totalPages = 10 // temp for testing
+    var totalPages by remember { mutableStateOf(0) }
+
+    var renderer by remember { mutableStateOf<PdfRenderer?>(null) }
+    var pageBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    LaunchedEffect(Unit) {
+        if (pdfName.isEmpty()) return@LaunchedEffect
+
+        val file = File("/data/data/${context.packageName}/files/$pdfName")
+
+        if (!file.exists()) {
+            val input = context.assets.open(pdfName)
+            file.outputStream().use { input.copyTo(it) }
+        }
+
+        val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+        val pdfRenderer = PdfRenderer(descriptor)
+        renderer = pdfRenderer
+        totalPages = pdfRenderer.pageCount
+
+        val page = pdfRenderer.openPage(0)
+        val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(android.graphics.Color.WHITE)
+        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        page.close()
+
+        pageBitmap = bitmap
+    }
 
     Scaffold(
         topBar = {
@@ -69,23 +105,34 @@ fun PdfViewerScreen(onBack: () -> Unit) {
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(
                             onDragEnd = {
-                                if (dragOffset < -100 && currentPage < totalPages) {
+                                if (dragOffset < -100 && currentPage < totalPages - 1) {
                                     currentPage++
-                                } else if (dragOffset > 100 && currentPage > 1) {
+                                } else if (dragOffset > 100 && currentPage > 0) {
                                     currentPage--
                                 }
                                 dragOffset = 0f
+
+                                renderer?.let { pdf ->
+                                    val page = pdf.openPage(currentPage)
+                                    val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+                                    bitmap.eraseColor(android.graphics.Color.WHITE)
+                                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                                    page.close()
+                                    pageBitmap = bitmap
+                                }
                             }
                         ) { _, dragAmount ->
                             dragOffset += dragAmount
                         }
                     }
             ) {
-                Text(
-                    text = "Page $currentPage",
-                    color = Color.White,
-                    modifier = Modifier.align(androidx.compose.ui.Alignment.Center)
-                )
+                pageBitmap?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -97,7 +144,17 @@ fun PdfViewerScreen(onBack: () -> Unit) {
             ) {
                 Button(
                     onClick = {
-                        if (currentPage > 1) currentPage--
+                        if (currentPage > 0) {
+                            currentPage--
+                            renderer?.let { pdf ->
+                                val page = pdf.openPage(currentPage)
+                                val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+                                bitmap.eraseColor(android.graphics.Color.WHITE)
+                                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                                page.close()
+                                pageBitmap = bitmap
+                            }
+                        }
                     },
                     shape = RoundedCornerShape(20.dp)
                 ) {
@@ -106,7 +163,17 @@ fun PdfViewerScreen(onBack: () -> Unit) {
 
                 Button(
                     onClick = {
-                        if (currentPage < totalPages) currentPage++
+                        if (currentPage < totalPages - 1) {
+                            currentPage++
+                            renderer?.let { pdf ->
+                                val page = pdf.openPage(currentPage)
+                                val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+                                bitmap.eraseColor(android.graphics.Color.WHITE)
+                                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                                page.close()
+                                pageBitmap = bitmap
+                            }
+                        }
                     },
                     shape = RoundedCornerShape(20.dp)
                 ) {

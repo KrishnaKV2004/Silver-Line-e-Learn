@@ -1,25 +1,34 @@
 package com.moonarc.silverline
 
 import android.content.Intent
+
+import android.graphics.Bitmap
+import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.asImageBitmap
 import com.moonarc.silverline.ui.theme.SilverLineTheme
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 class BookDetailActivity : ComponentActivity() {
@@ -37,6 +46,14 @@ class BookDetailActivity : ComponentActivity() {
                     onBack = { finish() },
                     onOpen = {
                         val intent = Intent(this, PdfViewerActivity::class.java)
+
+                        val pdfName = if (subject == "Science" && className == "Class 1") {
+                            "science_class1.pdf"
+                        } else {
+                            ""
+                        }
+
+                        intent.putExtra("pdf", pdfName)
                         startActivity(intent)
                     }
                 )
