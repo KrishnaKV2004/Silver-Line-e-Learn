@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SilverLine">
         <activity
+            android:name=".BookDetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_book_detail"
+            android:theme="@style/Theme.SilverLine" />
+        <activity
             android:name=".ClassListActivity"
             android:exported="false"
             android:label="@string/title_activity_class_list"
@@ -31,7 +36,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.SilverLine"></activity>
+            android:theme="@style/Theme.SilverLine" />
     </application>
 
 </manifest>
