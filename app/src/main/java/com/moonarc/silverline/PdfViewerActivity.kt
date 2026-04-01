@@ -1,5 +1,8 @@
 package com.moonarc.silverline
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.os.Bundle
@@ -126,12 +129,25 @@ fun PdfViewerScreen(pdfName: String, onBack: () -> Unit) {
                         }
                     }
             ) {
-                pageBitmap?.let {
-                    Image(
-                        bitmap = it.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                AnimatedContent(
+                    targetState = pageBitmap,
+                    transitionSpec = {
+                        slideInHorizontally(
+                            animationSpec = tween(300),
+                            initialOffsetX = { it }
+                        ) togetherWith slideOutHorizontally(
+                            animationSpec = tween(300),
+                            targetOffsetX = { -it }
+                        )
+                    }
+                ) { bitmap ->
+                    bitmap?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
 
