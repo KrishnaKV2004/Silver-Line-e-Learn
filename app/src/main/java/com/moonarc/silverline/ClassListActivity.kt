@@ -1,4 +1,7 @@
 package com.moonarc.silverline
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 
 import android.content.Intent
 import android.os.Bundle
@@ -82,14 +85,33 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                 ) {
                     Row(modifier = Modifier.fillMaxSize()) {
 
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(90.dp)
-                                .padding(8.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                        )
+                        val imageRes = if (subject == "Science" && item == "Class 1") {
+                            R.drawable.science_class1_cover
+                        } else {
+                            null
+                        }
+
+                        if (imageRes != null) {
+                            Image(
+                                painter = painterResource(id = imageRes),
+                                contentDescription = null,
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(90.dp)
+                                    .padding(8.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(90.dp)
+                                    .padding(8.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                        }
 
                         Column(
                             modifier = Modifier
