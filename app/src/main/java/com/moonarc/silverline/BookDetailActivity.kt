@@ -1,5 +1,6 @@
 package com.moonarc.silverline
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,7 +34,11 @@ class BookDetailActivity : ComponentActivity() {
                 BookDetailScreen(
                     subject = subject,
                     className = className,
-                    onBack = { finish() }
+                    onBack = { finish() },
+                    onOpen = {
+                        val intent = Intent(this, PdfViewerActivity::class.java)
+                        startActivity(intent)
+                    }
                 )
             }
         }
@@ -42,7 +47,18 @@ class BookDetailActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookDetailScreen(subject: String, className: String, onBack: () -> Unit) {
+fun BookDetailScreen(
+    subject: String,
+    className: String,
+    onBack: () -> Unit,
+    onOpen: () -> Unit
+) {
+
+    val imageRes = if (subject == "Science" && className == "Class 1") {
+        R.drawable.science_class1_cover
+    } else {
+        null
+    }
 
     Scaffold(
         topBar = {
@@ -63,12 +79,6 @@ fun BookDetailScreen(subject: String, className: String, onBack: () -> Unit) {
                 .padding(padding)
                 .padding(16.dp)
         ) {
-
-            val imageRes = if (subject == "Science" && className == "Class 1") {
-                R.drawable.science_class1_cover
-            } else {
-                null
-            }
 
             if (imageRes != null) {
                 Image(
@@ -92,30 +102,27 @@ fun BookDetailScreen(subject: String, className: String, onBack: () -> Unit) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // 📖 Title
             Text(
                 text = "$className Book",
                 style = MaterialTheme.typography.titleLarge
             )
 
-            // 📝 Description
             Text(
-                text = "This book contains lessons and content for $className $subject. Tap play to start learning.",
+                text = "This book contains lessons and content for $className $subject.",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // ▶️ Play Button
             Button(
-                onClick = { /* open PDF later */ },
+                onClick = onOpen,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
-                shape = RoundedCornerShape(25.dp)
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Text("Open Book")
             }
