@@ -165,50 +165,58 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     // Previous Button
-                    Box(
-                        modifier = Modifier
-                            .size(62.dp)
-                            .background(Color.Gray.copy(alpha = 0.3f), shape = CircleShape),
-                        contentAlignment = Alignment.Center
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = currentPage > 0,
+                        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.slideInHorizontally { -it },
+                        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.slideOutHorizontally { -it }
                     ) {
-                        IconButton(onClick = {
-                            if (currentPage > 0) {
+                        Box(
+                            modifier = Modifier
+                                .size(62.dp)
+                                .background(Color.Gray.copy(alpha = 0.3f), shape = CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(onClick = {
                                 currentPage--
                                 renderPage(currentPage)
+                            }) {
+                                Icon(
+                                    Icons.Filled.KeyboardArrowLeft,
+                                    contentDescription = "Previous",
+                                    tint = Color.White
+                                )
                             }
-                        }) {
-                            Icon(
-                                Icons.Filled.KeyboardArrowLeft,
-                                contentDescription = "Previous",
-                                tint = Color.White
-                            )
                         }
                     }
 
                     // Next Button
-                    Box(
-                        modifier = Modifier
-                            .size(62.dp)
-                            .background(Color.Gray.copy(alpha = 0.3f), shape = CircleShape),
-                        contentAlignment = Alignment.Center
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = currentPage < pdf.pageCount - 1,
+                        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.slideInHorizontally { it },
+                        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.slideOutHorizontally { it }
                     ) {
-                        IconButton(onClick = {
-                            if (currentPage < pdf.pageCount - 1) {
+                        Box(
+                            modifier = Modifier
+                                .size(62.dp)
+                                .background(Color.Gray.copy(alpha = 0.3f), shape = CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(onClick = {
                                 currentPage++
                                 renderPage(currentPage)
+                            }) {
+                                Icon(
+                                    Icons.Filled.KeyboardArrowRight,
+                                    contentDescription = "Next",
+                                    tint = Color.White
+                                )
                             }
-                        }) {
-                            Icon(
-                                Icons.Filled.KeyboardArrowRight,
-                                contentDescription = "Next",
-                                tint = Color.White
-                            )
                         }
                     }
                 }
