@@ -89,7 +89,7 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "App Logo",
-                modifier = Modifier.size(44.dp)
+                modifier = Modifier.size(56.dp)
             )
 
             Spacer(modifier = Modifier.width(10.dp))
@@ -97,13 +97,13 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
             Column {
                 Text(
                     text = "Silverline",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
                     text = "e-Learn",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
@@ -160,14 +160,15 @@ fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
 
                     // Cover placeholder (for future subject image)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .weight(0.7f)
                             .clip(RoundedCornerShape(16.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
                         contentAlignment = Alignment.Center
@@ -186,6 +187,8 @@ fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
+
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
