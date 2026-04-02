@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -70,77 +71,89 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
 
                 val context = LocalContext.current
 
+                val imageRes = if (subject == "Science" && item == "Class 1") {
+                    R.drawable.science_class1_cover
+                } else {
+                    null
+                }
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(110.dp)
+                        .height(120.dp)
                         .clickable {
                             val intent = Intent(context, BookDetailActivity::class.java)
                             intent.putExtra("subject", subject)
                             intent.putExtra("class", item)
                             context.startActivity(intent)
                         },
-                    shape = RoundedCornerShape(20.dp),
-                    elevation = CardDefaults.cardElevation(6.dp)
+                    shape = RoundedCornerShape(28.dp),
+                    elevation = CardDefaults.cardElevation(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
                 ) {
-                    Row(modifier = Modifier.fillMaxSize()) {
 
-                        val imageRes = if (subject == "Science" && item == "Class 1") {
-                            R.drawable.science_class1_cover
-                        } else {
-                            null
-                        }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                        if (imageRes != null) {
-                            Image(
-                                painter = painterResource(id = imageRes),
-                                contentDescription = null,
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(90.dp)
-                                    .padding(8.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                            )
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(90.dp)
-                                    .padding(8.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(12.dp),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = item,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-
-                            Text(
-                                text = "Tap to open",
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
+                        // Cover with slight elevation feel
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .padding(end = 16.dp),
-                            contentAlignment = androidx.compose.ui.Alignment.Center
+                                .width(85.dp)
+                                .clip(RoundedCornerShape(18.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (imageRes != null) {
+                                Image(
+                                    painter = painterResource(id = imageRes),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.width(18.dp))
+
+                        // Text Section
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = item,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Text(
+                                text = "Start learning →",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        // Floating arrow container
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = "Open",
-                                modifier = Modifier.rotate(180f)
+                                modifier = Modifier.rotate(180f),
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }

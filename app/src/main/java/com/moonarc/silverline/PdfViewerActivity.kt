@@ -225,7 +225,7 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                         bitmap = bmp.asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth(0.9f)
+                            .fillMaxWidth()
                             .aspectRatio(1f / 1.414f)
                             .align(Alignment.Center)
                             .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
@@ -246,18 +246,16 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-
                 Text(
                     text = "Page ${currentPage + 1} / ${pdf.pageCount}",
                     color = Color.White,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(8.dp)
+                        .padding(12.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(Modifier.height(30.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
