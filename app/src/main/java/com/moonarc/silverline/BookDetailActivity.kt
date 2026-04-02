@@ -1,4 +1,5 @@
 package com.moonarc.silverline
+import androidx.compose.ui.graphics.Color
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
@@ -12,16 +13,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -32,6 +37,229 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moonarc.silverline.ui.theme.SilverLineTheme
 import java.io.File
+
+@Composable
+fun InfoChip(text: String) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodySmall
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BookDetailScreen(
+    subject: String,
+    className: String,
+    onBack: () -> Unit,
+    onOpen: () -> Unit
+) {
+
+    val imageRes = if (subject == "Science" && className == "Class 1") {
+        R.drawable.science_class1_cover
+    } else null
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp)
+            ) {
+                Button(
+                    onClick = onOpen,
+                    modifier = Modifier
+                        .fillMaxWidth(0.85f)
+                        .height(56.dp)
+                        .align(Alignment.Center),
+                    shape = RoundedCornerShape(30.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.PlayArrow,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Start Reading")
+                    }
+                }
+            }
+        }
+    ) { padding ->
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                            MaterialTheme.colorScheme.background
+                        )
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+            ) {
+
+            // HERO SECTION
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .background(Color.Transparent)
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        }
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Text(
+                            text = subject,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = className,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+            }
+
+            // COVER
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-40).dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (imageRes != null) {
+                    Image(
+                        painter = painterResource(id = imageRes),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(170.dp)
+                            .aspectRatio(1f / 1.414f)
+                            .clip(RoundedCornerShape(18.dp))
+                            .shadow(12.dp, RoundedCornerShape(18.dp))
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+            ) {
+
+                // CHIPS
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+                ) {
+                    InfoChip("120+ Pages")
+                    InfoChip("English")
+                    InfoChip(className)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // TITLE BLOCK
+                Text(
+                    text = "$subject Book",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "Structured lessons and concepts",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // DESCRIPTION CARD
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "This book contains structured lessons, diagrams, and exercises designed specifically for $className students studying $subject. It helps build strong fundamentals with easy explanations.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(120.dp))
+            } // inner Column
+        } // main Column
+    } // gradient Box
+} // Scaffold
+} // BookDetailScreen
+
+@Composable
+fun InfoCard(title: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
+            .padding(vertical = 14.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Column {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 class BookDetailActivity : ComponentActivity() {
@@ -62,160 +290,5 @@ class BookDetailActivity : ComponentActivity() {
                 )
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BookDetailScreen(
-    subject: String,
-    className: String,
-    onBack: () -> Unit,
-    onOpen: () -> Unit
-) {
-
-    val imageRes = if (subject == "Science" && className == "Class 1") {
-        R.drawable.science_class1_cover
-    } else {
-        null
-    }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("$subject - $className") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp, vertical = 16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-
-            // Cover section (bigger + shadow feel)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                if (imageRes != null) {
-                    Image(
-                        painter = painterResource(id = imageRes),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .width(240.dp)
-                            .aspectRatio(1f / 1.414f)
-                            .clip(RoundedCornerShape(20.dp))
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .width(240.dp)
-                            .aspectRatio(1f / 1.414f)
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Title
-            Text(
-                text = "$className $subject",
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Subtitle
-            Text(
-                text = "NCERT Based Content",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Info cards row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    InfoCard(title = "Pages", value = "120+")
-                }
-                Box(modifier = Modifier.weight(1f)) {
-                    InfoCard(title = "Language", value = "English")
-                }
-                Box(modifier = Modifier.weight(1f)) {
-                    InfoCard(title = "Level", value = className)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Description
-            Text(
-                text = "About this book",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "This book contains structured lessons, diagrams, and exercises designed specifically for $className students studying $subject. It helps build strong fundamentals with easy explanations.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Open button (modern)
-            Button(
-                onClick = onOpen,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(top = 12.dp),
-                shape = RoundedCornerShape(40.dp)
-            ) {
-                Text("Open Book")
-            }
-        }
-    }
-}
-@Composable
-fun InfoCard(title: String, value: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
-            .padding(vertical = 14.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.height(2.dp))
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
