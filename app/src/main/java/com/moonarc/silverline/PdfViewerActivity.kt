@@ -32,6 +32,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.Image
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.animation.core.spring
 import java.io.File
 
 class PdfViewerActivity : ComponentActivity() {
@@ -144,6 +146,10 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
 
                     val animatedOffset by animateFloatAsState(
                         targetValue = dragOffset,
+                        animationSpec = spring(
+                            dampingRatio = 0.85f,
+                            stiffness = 300f
+                        ),
                         label = "slide"
                     )
 
@@ -154,7 +160,9 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                             .fillMaxWidth()
                             .aspectRatio(1f / 1.414f) // A4 ratio (width/height)
                             .align(Alignment.Center)
-                            .offset(x = animatedOffset.dp)
+                            .graphicsLayer {
+                                translationX = animatedOffset
+                            }
                     )
                 }
             }
