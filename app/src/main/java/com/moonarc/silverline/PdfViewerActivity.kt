@@ -2,6 +2,7 @@ package com.moonarc.silverline
 
 import android.content.Context
 import android.view.View
+import android.view.WindowManager
 
 import android.graphics.Bitmap
 import android.opengl.GLES20
@@ -43,21 +44,54 @@ class PdfViewerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pdfName = intent.getStringExtra("pdf") ?: return
-        val file = File(filesDir, pdfName)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
-        if (!file.exists()) {
-            assets.open(pdfName).use { input ->
-                file.outputStream().use { input.copyTo(it) }
+        val pdfName = intent.getStringExtra("pdf")
+        if (pdfName != null) {
+            try {
+                val file = File(filesDir, pdfName)
+
+                if (!file.exists()) {
+                    try {
+                        assets.open(pdfName).use { input ->
+                            file.outputStream().use { input.copyTo(it) }
+                        }
+                    } catch (e: Exception) {
+                        // file not found in assets
+                    }
+                }
+
+                if (file.exists()) {
+                    val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+                    pdfRenderer = PdfRenderer(descriptor)
+
+                    setContent {
+                        PdfScreen(pdfRenderer!!) {
+                            finish()
+                        }
+                    }
+                } else {
+                    setContent {
+                        NotAvailableScreen {
+                            finish()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                setContent {
+                    NotAvailableScreen {
+                        finish()
+                    }
+                }
             }
-        }
-
-        val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-        pdfRenderer = PdfRenderer(descriptor)
-
-        setContent {
-            PdfScreen(pdfRenderer!!) {
-                finish()
+        } else {
+            setContent {
+                NotAvailableScreen {
+                    finish()
+                }
             }
         }
     }
@@ -158,7 +192,7 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1f / 1.414f) // A4 ratio (width/height)
+                            .aspectRatio(1f / 1.414f)
                             .align(Alignment.Center)
                             .graphicsLayer {
                                 translationX = animatedOffset
@@ -232,5 +266,43 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
             Spacer(modifier = Modifier.weight(0.1f))
         }
 
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NotAvailableScreen(onBack: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Preview", color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Filled.KeyboardArrowLeft,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Black
+                )
+            )
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Not Available",
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
     }
 }
