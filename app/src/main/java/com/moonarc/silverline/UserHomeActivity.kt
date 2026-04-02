@@ -49,6 +49,7 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.ui.platform.LocalConfiguration
 import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Brush
 
 class UserHomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,18 +121,42 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(columns),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            item { SubjectBox("Hindi", android.R.drawable.ic_menu_gallery) }
-            item { SubjectBox("English", android.R.drawable.ic_menu_gallery) }
-            item { SubjectBox("Maths", android.R.drawable.ic_menu_gallery) }
-            item { SubjectBox("Science", android.R.drawable.ic_menu_gallery) }
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columns),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item { SubjectBox("Hindi", android.R.drawable.ic_menu_gallery) }
+                item { SubjectBox("English", android.R.drawable.ic_menu_gallery) }
+                item { SubjectBox("Maths", android.R.drawable.ic_menu_gallery) }
+                item { SubjectBox("Science", android.R.drawable.ic_menu_gallery) }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                androidx.compose.ui.graphics.Color.Transparent,
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.15f),
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.35f),
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.6f),
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
+                                MaterialTheme.colorScheme.background
+                            )
+                        )
+                    )
+            )
         }
     }
 }
