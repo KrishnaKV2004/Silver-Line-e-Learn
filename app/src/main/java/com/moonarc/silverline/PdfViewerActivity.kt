@@ -12,7 +12,10 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.Alignment
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,7 +79,7 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
+                            Icons.Filled.KeyboardArrowLeft,
                             contentDescription = "Back",
                             tint = Color.White
                         )
@@ -95,6 +98,7 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                 .background(Color.Black)
                 .padding(padding)
                 .padding(16.dp)
+                .padding(top = 8.dp)
         ) {
 
             Box(
@@ -128,30 +132,62 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = {
-                    if (currentPage > 0) {
-                        currentPage--
-                        renderPage(currentPage)
-                    }
-                }) {
-                    Text("Previous")
-                }
 
-                Button(onClick = {
-                    if (currentPage < pdf.pageCount - 1) {
-                        currentPage++
-                        renderPage(currentPage)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+
+                    // Previous Button
+                    Box(
+                        modifier = Modifier
+                            .size(62.dp)
+                            .background(Color.Gray.copy(alpha = 0.3f), shape = CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(onClick = {
+                            if (currentPage > 0) {
+                                currentPage--
+                                renderPage(currentPage)
+                            }
+                        }) {
+                            Icon(
+                                Icons.Filled.KeyboardArrowLeft,
+                                contentDescription = "Previous",
+                                tint = Color.White
+                            )
+                        }
                     }
-                }) {
-                    Text("Next")
+
+                    // Next Button
+                    Box(
+                        modifier = Modifier
+                            .size(62.dp)
+                            .background(Color.Gray.copy(alpha = 0.3f), shape = CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(onClick = {
+                            if (currentPage < pdf.pageCount - 1) {
+                                currentPage++
+                                renderPage(currentPage)
+                            }
+                        }) {
+                            Icon(
+                                Icons.Filled.KeyboardArrowRight,
+                                contentDescription = "Next",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
             }
+            Spacer(modifier = Modifier.weight(0.1f))
         }
+
     }
 }
