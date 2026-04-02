@@ -105,8 +105,9 @@ fun BookDetailScreen(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            MaterialTheme.colorScheme.background
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),   // stronger top
+                            MaterialTheme.colorScheme.background,                   // middle
+                            MaterialTheme.colorScheme.background.copy(alpha = 1f)   // solid bottom fade
                         )
                     )
                 )
@@ -122,7 +123,7 @@ fun BookDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
+                    .height(140.dp)
                     .background(Color.Transparent)
             ) {
 
@@ -147,12 +148,8 @@ fun BookDetailScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        text = className,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
                 }
             }
 
@@ -160,7 +157,7 @@ fun BookDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(y = (-40).dp),
+                    .offset(y = (-60).dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (imageRes != null) {
@@ -169,7 +166,7 @@ fun BookDetailScreen(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .width(170.dp)
+                            .width(200.dp)
                             .aspectRatio(1f / 1.414f)
                             .clip(RoundedCornerShape(18.dp))
                             .shadow(12.dp, RoundedCornerShape(18.dp))
@@ -177,10 +174,9 @@ fun BookDetailScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             Column(
                 modifier = Modifier
+                    .offset(y = (-40).dp)
                     .padding(horizontal = 20.dp)
             ) {
 
@@ -188,7 +184,7 @@ fun BookDetailScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
                 ) {
                     InfoChip("120+ Pages")
