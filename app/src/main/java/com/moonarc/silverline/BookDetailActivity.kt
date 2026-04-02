@@ -12,7 +12,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -95,55 +97,125 @@ fun BookDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
 
-            if (imageRes != null) {
-                Image(
-                    painter = painterResource(id = imageRes),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .width(220.dp)
-                        .aspectRatio(1f / 1.414f)
-                        .align(Alignment.CenterHorizontally)
-                        .clip(RoundedCornerShape(20.dp))
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .width(220.dp)
-                        .aspectRatio(1f / 1.414f)
-                        .align(Alignment.CenterHorizontally)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                )
+            // Cover section (bigger + shadow feel)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (imageRes != null) {
+                    Image(
+                        painter = painterResource(id = imageRes),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .width(240.dp)
+                            .aspectRatio(1f / 1.414f)
+                            .clip(RoundedCornerShape(20.dp))
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .width(240.dp)
+                            .aspectRatio(1f / 1.414f)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Title
+            Text(
+                text = "$className $subject",
+                style = MaterialTheme.typography.headlineSmall
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Subtitle
+            Text(
+                text = "NCERT Based Content",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Info cards row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(modifier = Modifier.weight(1f)) {
+                    InfoCard(title = "Pages", value = "120+")
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    InfoCard(title = "Language", value = "English")
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    InfoCard(title = "Level", value = className)
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Description
             Text(
-                text = "$className Book",
-                style = MaterialTheme.typography.titleLarge
+                text = "About this book",
+                style = MaterialTheme.typography.titleMedium
             )
 
+            Spacer(modifier = Modifier.height(6.dp))
+
             Text(
-                text = "This book contains lessons and content for $className $subject.",
-                fontSize = 16.sp,
+                text = "This book contains structured lessons, diagrams, and exercises designed specifically for $className students studying $subject. It helps build strong fundamentals with easy explanations.",
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp))
 
+            // Open button (modern)
             Button(
                 onClick = onOpen,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp),
-                shape = RoundedCornerShape(20.dp)
+                    .height(60.dp)
+                    .padding(top = 12.dp),
+                shape = RoundedCornerShape(40.dp)
             ) {
                 Text("Open Book")
             }
         }
+    }
+}
+@Composable
+fun InfoCard(title: String, value: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
+            .padding(vertical = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
