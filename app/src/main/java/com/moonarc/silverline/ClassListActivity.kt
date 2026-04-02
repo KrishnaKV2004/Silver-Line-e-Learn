@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -87,7 +88,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                             intent.putExtra("class", item)
                             context.startActivity(intent)
                         },
-                    shape = RoundedCornerShape(28.dp),
+                    shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(8.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -105,8 +106,8 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .width(85.dp)
-                                .clip(RoundedCornerShape(18.dp))
+                                .aspectRatio(1f / 1.414f) // A4 proportion
+                                .clip(RoundedCornerShape(8.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
@@ -135,7 +136,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                             Spacer(modifier = Modifier.height(6.dp))
 
                             Text(
-                                text = "Start learning →",
+                                text = "Start learning",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -150,9 +151,8 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowBack,
+                                imageVector = Icons.Filled.KeyboardArrowRight,
                                 contentDescription = "Open",
-                                modifier = Modifier.rotate(180f),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
