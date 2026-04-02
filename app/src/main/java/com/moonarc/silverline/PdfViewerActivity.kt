@@ -16,6 +16,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.material3.*
@@ -36,6 +37,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.animation.core.spring
 import java.io.File
+import androidx.compose.ui.draw.clip
 
 class PdfViewerActivity : ComponentActivity() {
 
@@ -105,6 +107,10 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var dragOffset by remember { mutableStateOf(0f) }
     var curl by remember { mutableStateOf(0f) }
+    var scale by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+    var nextBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     fun renderPage(index: Int) {
         val page = pdf.openPage(index)
@@ -113,6 +119,18 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
         page.render(bmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
         page.close()
         bitmap = bmp
+
+        // preload next page
+        if (index < pdf.pageCount - 1) {
+            try {
+                val nextPage = pdf.openPage(index + 1)
+                val nextBmp = Bitmap.createBitmap(nextPage.width, nextPage.height, Bitmap.Config.ARGB_8888)
+                nextBmp.eraseColor(android.graphics.Color.WHITE)
+                nextPage.render(nextBmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                nextPage.close()
+                nextBitmap = nextBmp
+            } catch (_: Exception) {}
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -154,6 +172,23 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                     .weight(1f)
                     .background(Color.Black)
                     .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            val newScale = (scale * zoom).coerceIn(1f, 3f)
+
+                            // Apply zoom
+                            scale = newScale
+
+                            // Only allow panning when zoomed in
+                            if (scale > 1f) {
+                                offsetX += pan.x
+                                offsetY += pan.y
+                            } else {
+                                offsetX = 0f
+                                offsetY = 0f
+                            }
+                        }
+                    }
+                    .pointerInput(Unit) {
                         detectHorizontalDragGestures(
                             onDragEnd = {
                                 if (dragOffset < -150 && currentPage < pdf.pageCount - 1) {
@@ -164,15 +199,14 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                                     renderPage(currentPage)
                                 }
 
-                                // reset curl after release
                                 curl = 0f
                                 dragOffset = 0f
                             }
                         ) { _, dragAmount ->
-                            dragOffset += dragAmount
-
-                            // convert drag to curl (0 to 1)
-                            curl = (-dragOffset / 800f).coerceIn(0f, 1f)
+                            if (scale <= 1.05f) {
+                                dragOffset += dragAmount
+                                curl = (-dragOffset / 800f).coerceIn(0f, 1f)
+                            }
                         }
                     }
             ) {
@@ -191,17 +225,39 @@ fun PdfScreen(pdf: PdfRenderer, onBack: () -> Unit) {
                         bitmap = bmp.asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(0.9f)
                             .aspectRatio(1f / 1.414f)
                             .align(Alignment.Center)
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                            .background(Color.Black)
                             .graphicsLayer {
-                                translationX = animatedOffset
+                                val maxX = (scale - 1f) * 300f
+                                val maxY = (scale - 1f) * 500f
+
+                                val clampedX = offsetX.coerceIn(-maxX, maxX)
+                                val clampedY = offsetY.coerceIn(-maxY, maxY)
+
+                                translationX = animatedOffset + clampedX
+                                translationY = clampedY
+                                scaleX = scale
+                                scaleY = scale
+                                clip = true
                             }
                     )
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Page ${currentPage + 1} / ${pdf.pageCount}",
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(8.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
