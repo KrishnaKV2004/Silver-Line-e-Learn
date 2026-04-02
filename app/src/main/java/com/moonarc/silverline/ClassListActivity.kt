@@ -48,7 +48,7 @@ class ClassListActivity : ComponentActivity() {
 @Composable
 fun ClassListScreen(subject: String, onBack: () -> Unit) {
 
-    val classList = (1..10).map { "Class $it" }
+    val classList = (1..8).map { "Class $it" }
 
     Scaffold(
         topBar = {
@@ -115,7 +115,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(20.dp)
+                            shape = RoundedCornerShape(16.dp)
                         )
                         .height(120.dp)
                         .clickable {
@@ -134,7 +134,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(14.dp),
+                            .padding(start = 0.dp, top = 0.dp, bottom = 0.dp, end = 14.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
@@ -143,7 +143,14 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .aspectRatio(1f / 1.414f) // A4 proportion
-                                .clip(RoundedCornerShape(8.dp))
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = 20.dp,
+                                        bottomStart = 20.dp,
+                                        topEnd = 0.dp,
+                                        bottomEnd = 0.dp
+                                    )
+                                )
                                 .background(MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
