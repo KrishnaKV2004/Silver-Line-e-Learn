@@ -8,10 +8,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -64,10 +66,38 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "Choose your class",
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Select a class to start learning",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            item {
+                Divider(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
             items(classList) { item ->
 
                 val context = LocalContext.current
@@ -81,6 +111,12 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 4.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(20.dp)
+                        )
                         .height(120.dp)
                         .clickable {
                             val intent = Intent(context, BookDetailActivity::class.java)
@@ -88,7 +124,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                             intent.putExtra("class", item)
                             context.startActivity(intent)
                         },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(20.dp),
                     elevation = CardDefaults.cardElevation(8.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -145,9 +181,9 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                         // Floating arrow container
                         Box(
                             modifier = Modifier
-                                .size(42.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
