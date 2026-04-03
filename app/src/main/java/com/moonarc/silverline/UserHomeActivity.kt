@@ -161,6 +161,12 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
     }
 }
 
+// Subject cover mapping for scalable covers
+val subjectCovers = mapOf(
+    "Science" to R.drawable.science_class1_cover
+    // Add more subjects here later easily
+)
+
 @Composable
 fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -189,20 +195,47 @@ fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    // Cover placeholder (for future subject image)
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.7f)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = title.first().toString(),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary
+                    val coverRes = subjectCovers[title]
+
+                    if (coverRes != null) {
+                        Image(
+                            painter = painterResource(id = coverRes),
+                            contentDescription = "$title Cover",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(0.7f)
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = 16.dp,
+                                        topEnd = 16.dp,
+                                        bottomStart = 0.dp,
+                                        bottomEnd = 0.dp
+                                    )
+                                )
                         )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(0.7f)
+                                .clip(
+                                    RoundedCornerShape(
+                                        topStart = 16.dp,
+                                        topEnd = 16.dp,
+                                        bottomStart = 0.dp,
+                                        bottomEnd = 0.dp
+                                    )
+                                )
+                                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = title.first().toString(),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
