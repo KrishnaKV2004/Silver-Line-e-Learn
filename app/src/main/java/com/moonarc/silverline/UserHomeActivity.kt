@@ -138,26 +138,23 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
                 item { SubjectBox("Maths", android.R.drawable.ic_menu_gallery) }
                 item { SubjectBox("Science", android.R.drawable.ic_menu_gallery) }
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                androidx.compose.ui.graphics.Color.Transparent,
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.15f),
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.35f),
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.6f),
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
-                                MaterialTheme.colorScheme.background
-                            )
-                        )
-                    )
-            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Made with ❤️ by Silverline",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = "Version 1.0 • Learn smarter every day",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+        )
     }
 }
 
