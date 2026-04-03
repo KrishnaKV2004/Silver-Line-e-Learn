@@ -137,6 +137,11 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
                 item { SubjectBox("English", android.R.drawable.ic_menu_gallery) }
                 item { SubjectBox("Maths", android.R.drawable.ic_menu_gallery) }
                 item { SubjectBox("Science", android.R.drawable.ic_menu_gallery) }
+
+                // bottom padding space
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Spacer(modifier = Modifier.height(18.dp))
+                }
             }
         }
 
