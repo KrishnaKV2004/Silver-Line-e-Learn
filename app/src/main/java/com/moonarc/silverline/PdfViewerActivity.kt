@@ -52,13 +52,15 @@ class PdfViewerActivity : ComponentActivity() {
         )
 
         val pdfName = intent.getStringExtra("pdf")
+        val pdfFileName = if (pdfName?.endsWith(".pdf") == true) pdfName else "$pdfName.pdf"
         if (pdfName != null) {
             try {
-                val file = File(filesDir, pdfName)
+                val file = File(filesDir, pdfFileName!!)
 
                 if (!file.exists()) {
                     try {
-                        assets.open(pdfName).use { input ->
+                        // Directly try opening the file from assets (works even if inside folders)
+                        assets.open(pdfFileName).use { input ->
                             file.outputStream().use { input.copyTo(it) }
                         }
                     } catch (e: Exception) {
