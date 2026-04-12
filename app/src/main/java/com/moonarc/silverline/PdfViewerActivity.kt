@@ -52,45 +52,111 @@ class PdfViewerActivity : ComponentActivity() {
         )
 
         val pdfName = intent.getStringExtra("pdf")
-        val pdfFileName = if (pdfName?.endsWith(".pdf") == true) pdfName else "$pdfName.pdf"
         if (pdfName != null) {
-            try {
-                val file = File(filesDir, pdfFileName!!)
 
-                if (!file.exists()) {
-                    try {
-                        // Directly try opening the file from assets (works even if inside folders)
-                        assets.open(pdfFileName).use { input ->
-                            file.outputStream().use { input.copyTo(it) }
-                        }
-                    } catch (e: Exception) {
-                        // file not found in assets
-                    }
-                }
+            val pdfFileName = if (pdfName.endsWith(".pdf")) pdfName else "$pdfName.pdf"
 
-                if (file.exists()) {
-                    val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-                    pdfRenderer = PdfRenderer(descriptor)
+            val subjectFolder = when {
+                pdfFileName.startsWith("science") -> "science"
+                pdfFileName.startsWith("maths") -> "maths"
+                pdfFileName.startsWith("social") -> "social"
+                else -> ""
+            }
 
-                    setContent {
-                        PdfScreen(pdfRenderer!!) {
-                            finish()
+            val url = "https://raw.githubusercontent.com/SilverlinePub/e-learn/main/books/$subjectFolder/$pdfFileName"
+
+            // Save in INTERNAL storage
+            val file = File(filesDir, pdfFileName)
+
+            var progress by mutableStateOf(0f)
+            var isDownloading by mutableStateOf(!file.exists())
+
+            // Initialize renderer BEFORE UI if file exists
+            if (file.exists()) {
+                val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+                pdfRenderer = PdfRenderer(descriptor)
+            }
+
+            setContent {
+                when {
+                    file.exists() && pdfRenderer != null -> {
+                        PdfScreen(pdfRenderer!!) { finish() }
+                    }
+
+                    isDownloading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                CircularProgressIndicator(progress = progress)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(
+                                    text = "Downloading ${(progress * 100).toInt()}%",
+                                    color = Color.White
+                                )
+                            }
                         }
                     }
-                } else {
-                    setContent {
-                        NotAvailableScreen {
-                            finish()
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                setContent {
-                    NotAvailableScreen {
-                        finish()
+
+                    else -> {
+                        NotAvailableScreen { finish() }
                     }
                 }
             }
+
+            Thread {
+                try {
+
+                    if (!file.exists()) {
+
+                        val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                        connection.connectTimeout = 15000
+                        connection.readTimeout = 15000
+                        connection.connect()
+
+                        val total = connection.contentLength
+                        var downloaded = 0
+
+                        connection.inputStream.use { input ->
+                            file.outputStream().use { output ->
+                                val buffer = ByteArray(8 * 1024)
+                                var bytesRead: Int
+
+                                while (input.read(buffer).also { bytesRead = it } != -1) {
+                                    output.write(buffer, 0, bytesRead)
+                                    downloaded += bytesRead
+
+                                    if (total > 0) {
+                                        val prog = downloaded.toFloat() / total
+                                        runOnUiThread {
+                                            progress = prog
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (file.exists()) {
+                        val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+                        pdfRenderer = PdfRenderer(descriptor)
+
+                        runOnUiThread {
+                            isDownloading = false
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    runOnUiThread {
+                        isDownloading = false
+                    }
+                }
+            }.start()
+
         } else {
             setContent {
                 NotAvailableScreen {

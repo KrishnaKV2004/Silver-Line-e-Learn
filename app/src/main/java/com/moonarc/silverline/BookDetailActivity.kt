@@ -66,6 +66,8 @@ fun BookDetailScreen(
         R.drawable.science_class1_cover
     } else null
 
+    var isDownloading by remember { mutableStateOf(false) }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
@@ -76,7 +78,10 @@ fun BookDetailScreen(
                     .padding(16.dp)
             ) {
                 Button(
-                    onClick = onOpen,
+                    onClick = {
+                        isDownloading = true
+                        onOpen()
+                    },
                     modifier = Modifier
                         .fillMaxWidth(0.85f)
                         .height(56.dp)
@@ -92,7 +97,7 @@ fun BookDetailScreen(
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Start Reading")
+                        Text(if (isDownloading) "Downloading..." else "Start Reading")
                     }
                 }
             }
