@@ -68,6 +68,10 @@ fun BookDetailScreen(
 
     var isDownloading by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        isDownloading = false
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
@@ -97,7 +101,7 @@ fun BookDetailScreen(
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(if (isDownloading) "Downloading..." else "Start Reading")
+                        Text("Start Reading")
                     }
                 }
             }
