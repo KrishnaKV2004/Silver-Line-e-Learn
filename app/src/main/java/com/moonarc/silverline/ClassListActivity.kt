@@ -49,7 +49,13 @@ class ClassListActivity : ComponentActivity() {
 @Composable
 fun ClassListScreen(subject: String, onBack: () -> Unit) {
 
-    val classList = (1..8).map { "Class $it" }
+    val classList = when (subject.lowercase()) {
+        "maths" -> (1..5).map { "Class $it" }
+        "science" -> (1..8).map { "Class $it" }
+        "social science" -> (1..8).map { "Class $it" }
+        "hindi" -> (1..8).map { "Class $it" }
+        else -> (1..8).map { "Class $it" }
+    }
 
     Scaffold(
         topBar = {
@@ -104,7 +110,9 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                 val context = LocalContext.current
 
                 val classNumber = item.replace("Class ", "")
-                val subjectKey = subject.lowercase().replace(" ", "_")
+                val subjectKey = subject.lowercase()
+                    .replace("social science", "social")
+                    .replace(" ", "")
 
                 val resourceName = "${subjectKey}_class${classNumber}_cover_s"
 

@@ -284,7 +284,10 @@ class BookDetailActivity : ComponentActivity() {
                     onOpen = {
                         val intent = Intent(this, PdfViewerActivity::class.java)
 
-                        val pdfName = "${subject.lowercase()}_${className.lowercase().replace(" ", "")}.pdf"
+                        val subjectKey = subject.lowercase().replace("social science", "social").replace(" ", "")
+                        val classKey = className.lowercase().replace(" ", "")
+
+                        val pdfName = "${subjectKey}_${classKey}.pdf"
 
                         intent.putExtra("pdf", pdfName)
                         startActivity(intent)

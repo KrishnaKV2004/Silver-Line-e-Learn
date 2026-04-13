@@ -137,6 +137,8 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
                 item { SubjectBox("English", android.R.drawable.ic_menu_gallery) }
                 item { SubjectBox("Maths", android.R.drawable.ic_menu_gallery) }
                 item { SubjectBox("Science", android.R.drawable.ic_menu_gallery) }
+                item { SubjectBox("Social Science", android.R.drawable.ic_menu_gallery) }
+                item { SubjectBox("GK", android.R.drawable.ic_menu_gallery) }
 
                 // bottom padding space
                 item(span = { GridItemSpan(maxLineSpan) }) {
@@ -166,7 +168,6 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
 // Subject cover mapping for scalable covers
 val subjectCovers = mapOf(
     "Science" to R.drawable.science_class1_cover
-    // Add more subjects here later easily
 )
 
 @Composable
