@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -102,11 +103,18 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
 
                 val context = LocalContext.current
 
-                val imageRes = if (subject == "Science" && item == "Class 1") {
-                    R.drawable.science_class1_cover
-                } else {
-                    null
-                }
+                val classNumber = item.replace("Class ", "")
+                val subjectKey = subject.lowercase().replace(" ", "_")
+
+                val resourceName = "${subjectKey}_class${classNumber}_cover_s"
+
+                val imageRes = remember(resourceName) {
+                    context.resources.getIdentifier(
+                        resourceName,
+                        "drawable",
+                        context.packageName
+                    )
+                }.takeIf { it != 0 }
 
                 Card(
                     modifier = Modifier
