@@ -60,6 +60,7 @@ class PdfViewerActivity : ComponentActivity() {
                 pdfFileName.startsWith("science") -> "science"
                 pdfFileName.startsWith("maths") -> "maths"
                 pdfFileName.startsWith("social") -> "social"
+                pdfFileName.startsWith("gk") -> "gk"
                 else -> ""
             }
 

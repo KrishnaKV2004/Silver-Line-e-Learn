@@ -112,6 +112,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                 val classNumber = item.replace("Class ", "")
                 val subjectKey = subject.lowercase()
                     .replace("social science", "social")
+                    .replace("general knowledge", "gk")
                     .replace(" ", "")
 
                 val resourceName = "${subjectKey}_class${classNumber}_cover_s"
