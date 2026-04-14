@@ -62,9 +62,24 @@ fun BookDetailScreen(
     onOpen: () -> Unit
 ) {
 
-    val imageRes = if (subject == "Science" && className == "Class 1") {
-        R.drawable.science_cover
-    } else null
+    val context = LocalContext.current
+
+    val classNumber = className.replace("Class ", "")
+    val subjectKey = subject.lowercase()
+        .replace("social science", "social")
+        .replace("general knowledge", "gk")
+        .replace("hindi text", "hindi_text")
+        .replace(" ", "")
+
+    val resourceName = "${subjectKey}_class${classNumber}_cover_s"
+
+    val imageRes = remember(resourceName) {
+        context.resources.getIdentifier(
+            resourceName,
+            "drawable",
+            context.packageName
+        )
+    }.takeIf { it != 0 }
 
     var isDownloading by remember { mutableStateOf(false) }
 
