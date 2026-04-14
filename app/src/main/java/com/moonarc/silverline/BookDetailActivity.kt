@@ -212,8 +212,9 @@ fun BookDetailScreen(
                         .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
                 ) {
-                    InfoChip("120+ Pages")
-                    InfoChip("English")
+                    InfoChip("80+ Pages")
+                    val displaySubject = if (subject.lowercase() == "general knowledge") "GK" else subject
+                    InfoChip(displaySubject)
                     InfoChip(className)
                 }
 
@@ -302,7 +303,7 @@ class BookDetailActivity : ComponentActivity() {
                         val subjectKey = subject.lowercase().replace("social science", "social")
                             .replace("general knowledge", "gk")
                             .replace("hindi text", "hindi_text")
-                            .replace("", "")
+                            .replace(" ", "")
                         val classKey = className.lowercase().replace(" ", "")
 
                         val pdfName = "${subjectKey}_${classKey}.pdf"
