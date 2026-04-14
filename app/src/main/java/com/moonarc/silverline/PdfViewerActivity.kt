@@ -61,6 +61,7 @@ class PdfViewerActivity : ComponentActivity() {
                 pdfFileName.startsWith("maths") -> "maths"
                 pdfFileName.startsWith("social") -> "social"
                 pdfFileName.startsWith("gk") -> "gk"
+                pdfFileName.startsWith("hindi_text") -> "hindi_text"
                 else -> ""
             }
 
