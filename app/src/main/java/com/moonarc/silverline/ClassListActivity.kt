@@ -52,7 +52,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
     val classList = when (subject.lowercase()) {
         "maths" -> (1..5).map { "Class $it" }
         "science" -> (1..8).map { "Class $it" }
-        "social science" -> (1..8).map { "Class $it" }
+        "social science" -> (1..5).map { "Class $it" }
         "hindi" -> (1..8).map { "Class $it" }
         else -> (1..8).map { "Class $it" }
     }

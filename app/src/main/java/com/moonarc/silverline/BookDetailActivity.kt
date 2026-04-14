@@ -63,7 +63,7 @@ fun BookDetailScreen(
 ) {
 
     val imageRes = if (subject == "Science" && className == "Class 1") {
-        R.drawable.science_class1_cover
+        R.drawable.science_cover
     } else null
 
     var isDownloading by remember { mutableStateOf(false) }

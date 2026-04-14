@@ -167,7 +167,9 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
 
 // Subject cover mapping for scalable covers
 val subjectCovers = mapOf(
-    "Science" to R.drawable.science_class1_cover
+    "Science" to R.drawable.science_cover,
+    "Social Science" to R.drawable.social_cover,
+    "Maths" to R.drawable.maths_cover
 )
 
 @Composable
