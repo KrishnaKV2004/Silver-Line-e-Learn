@@ -105,7 +105,10 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
-            items(classList) { item ->
+            items(
+                items = classList,
+                key = { it }
+            ) { item ->
 
                 val context = LocalContext.current
 
@@ -126,6 +129,8 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                     )
                 }.takeIf { it != 0 }
 
+                val painter = imageRes?.let { painterResource(id = it) }
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -143,7 +148,7 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                             context.startActivity(intent)
                         },
                     shape = RoundedCornerShape(20.dp),
-                    elevation = CardDefaults.cardElevation(8.dp),
+                    elevation = CardDefaults.cardElevation(2.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     )
@@ -172,9 +177,9 @@ fun ClassListScreen(subject: String, onBack: () -> Unit) {
                                 .background(MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (imageRes != null) {
+                            if (painter != null) {
                                 Image(
-                                    painter = painterResource(id = imageRes),
+                                    painter = painter,
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()

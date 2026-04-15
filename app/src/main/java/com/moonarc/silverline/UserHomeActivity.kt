@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.moonarc.silverline.ui.theme.SilverLineTheme
@@ -129,6 +130,7 @@ fun SubjectScreen(modifier: Modifier = Modifier) {
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(columns),
+                userScrollEnabled = true,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
@@ -174,7 +176,7 @@ fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
     ) {
         Card(
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(6.dp),
+            elevation = CardDefaults.cardElevation(2.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(0.6f)
@@ -189,7 +191,7 @@ fun SubjectBox(title: String, imageRes: Int, modifier: Modifier = Modifier) {
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    val coverRes = subjectCovers[title]
+                    val coverRes = remember(title) { subjectCovers[title] }
 
                     if (coverRes != null) {
                         Image(
